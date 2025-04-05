@@ -1,1 +1,0 @@
-i want to put the output of my ode in index file linked to http://localhost:3000/ to add and show everything i want to interact  with use table 
