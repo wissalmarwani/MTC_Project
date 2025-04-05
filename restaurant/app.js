@@ -32,24 +32,34 @@ app.get("/plats/:id", (req, res) => {
   if (foundPlat) {
     res.json(foundPlat);
   } else {
-    res.status(404).json({ error: "Plat not found" });
+    res.json({ error: "Plat not found" });
   }
 });
 
 // Search Plat By “nom” OR By “prix”
-app.get("/plats/search", (req, res) => {
-  const { nom, prix } = req.query;
+
+app.get("/plats/nom/:nom/prix/:prix", (req, res) => {
+  const { nom, prix } = req.params;  
   let result = plats;
 
+  // par nom
   if (nom) {
     result = result.filter(plat => plat.nom.toLowerCase().includes(nom.toLowerCase()));
   }
+
+  // par prix
   if (prix) {
     result = result.filter(plat => plat.prix == prix);
   }
 
-  res.json(result);
+  // Si aucun plat n'est trouvé
+  if (result.length === 0) {
+    return res.status(404).json({ error: "Plat not found" });
+  }
+
+  res.json(result);  
 });
+
 
 // Delete all plats
 app.delete("/plats", (req, res) => {
@@ -76,7 +86,7 @@ app.put("/plats/:id", (req, res) => {
   const plat = plats.find(p => p.id === platId);
 
   if (!plat) {
-    return res.status(404).json({ message: "Plat not found" });
+    return res.json({ message: "Plat not found" });
   }
 
   plat.prix = req.body.prix;
@@ -103,21 +113,21 @@ app.get("/users", (req, res) => {
   res.json(users);
 });
 // Search user by telephone number
-app.get("/users/search", (req, res) => {
-  const tel = parseInt(req.query.tel);
-  
+app.get("/users/search/:tel", (req, res) => {
+  const tel = parseInt(req.params.tel);  
   if (isNaN(tel)) {
-    return res.status(400).json({ message: "Invalid telephone number" });
+    return res.json({ message: "Invalid telephone number" });
   }
 
   const foundUser = users.find(user => user.tel === tel);
 
   if (!foundUser) {
-    return res.status(404).json({ message: "User not found" });
+    return res.json({ message: "User not found" });
   }
 
   res.json(foundUser);
 });
+
 
 // Delete user name
 app.delete("/users/:nom", (req, res) => {
@@ -137,18 +147,18 @@ app.post("/users", (req, res) => {
   const { nom, tel } = req.body;
 
   if (!nom || !tel) {
-    return res.status(400).json({ message: "Name and telephone number are updated" });
+    return res.json({ message: "Name and telephone number are updated" });
   }
 
   if (users.some(user => user.tel === tel)) {
-    return res.status(409).json({ message: "User with this telephone number already exists" });
+    return res.json({ message: "User with this telephone number already exists" });
   }
 
   const id = users.length > 0 ? Math.max(...users.map(user => user.id)) + 1 : 1;
   const newUser = { id, nom, tel };
 
   users.push(newUser);
-  res.status(201).json(newUser);
+  res.json(newUser);
 });
 
 
