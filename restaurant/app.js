@@ -54,7 +54,7 @@ app.get("/plats/nom/:nom/prix/:prix", (req, res) => {
 
   // Si aucun plat n'est trouvé
   if (result.length === 0) {
-    return res.status(404).json({ error: "Plat not found" });
+    return res.json({ error: "Plat not found" });
   }
 
   res.json(result);  
@@ -73,7 +73,7 @@ app.delete("/plats/:id", (req, res) => {
   const position = plats.findIndex(obj => obj.id === platId);
 
   if (position === -1) {
-    res.status(404).json({ message: "Plat not found" });
+    res.json({ message: "Plat not found" });
   } else {
     plats.splice(position, 1);
     res.json({ message: "Plat Deleted with success" });
@@ -135,7 +135,7 @@ app.delete("/users/:nom", (req, res) => {
   const index = users.findIndex(user => user.nom.toLowerCase() === userName);
 
   if (index === -1) {
-    return res.status(404).json({ message: "User not found" });
+    return res.json({ message: "User not found" });
   }
 
   users.splice(index, 1);
@@ -188,7 +188,7 @@ app.get("/orders/:id", (req, res) => {
   const order = orders.find(o => o.id === orderId);
 
   if (!order) {
-    return res.status(404).json({ message: "Order not found" });
+    return res.json({ message: "Order not found" });
   }
 
   const utilisateur = users.find(u => u.id === order.userId) ?? null;
